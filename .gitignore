@@ -1,2 +1,8 @@
 # venv
 .venv
+
+# notebook
+notebooks
+
+# Distribution
+sicilian_translator.egg-info
