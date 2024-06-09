@@ -76,6 +76,7 @@ train_dataloader = DataLoader(preprocessed_train, batch_size=32)
 
 ## model
 model = T5ForConditionalGeneration.from_pretrained("t5-base").to(device)
+model.resize_token_embeddings(len(tokenizer)) # resize model embeddings
 
 ## loss function
 loss_fn = torch.nn.CrossEntropyLoss(ignore_index=tokenizer.pad_token_id)
@@ -114,7 +115,7 @@ def train_epoch(model, optimizer):
         # logits
         logits = outputs.logits
 
-        # loss / try pass it thru linear(n_embed, n_vocab) and then (softmax or logsoftmax)
+        # loss
         loss = loss_fn(logits.view(-1, 530482), tgt_out.contiguous().view(-1))
 
         # calculating gradient for the loss function
