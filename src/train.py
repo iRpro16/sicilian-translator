@@ -42,9 +42,9 @@ class TokenData(Dataset):
     
 
 ## path to csv dataset
-path = "/mnt/c/Users/Isidoro/Documents/datasets/en-si/train_dataset"
+path = "train_dataset"
 ## fetch tokenizer
-path_token = "/mnt/c/Users/Isidoro/Documents/project-uses/tokenizer"
+path_token = "tokenizer"
 
 
 ## Fetch the data
