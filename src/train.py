@@ -2,10 +2,7 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader, Dataset
 from torch import Tensor
-from sklearn.model_selection import train_test_split
-from typing import Iterable, List
 import numpy as np
-from torch.nn import Transformer
 import os
 import matplotlib.pyplot as plt
 from tqdm import tqdm
@@ -14,8 +11,18 @@ from timeit import default_timer as timer
 from collections import OrderedDict
 import pandas as pd
 from transformers import T5Tokenizer, T5ForConditionalGeneration
+import torch.multiprocessing as mp
+from torch.utils.data.distributed import DistributedSampler
+from torch.distributed import init_process_group, destroy_process_group
+from torch.nn.parallel import DistributedDataParallel as DDP
 
-device = 'cuda' if torch.cuda.is_available else 'cpu'
+device = "cuda" if torch.cuda.is_available() else "cpu"
+
+## path to csv dataset
+path_dataset = "train_dataset"
+
+## fetch tokenizer
+path_token = "tokenizer"
 
 ## TokenDataset
 class TokenData(Dataset):
@@ -39,13 +46,6 @@ class TokenData(Dataset):
             "decoder_input_ids": torch.tensor(preprocessed_tgt["input_ids"], dtype=torch.long),
             "decoder_attention_mask": torch.tensor(preprocessed_tgt["attention_mask"], dtype=torch.long)
         }
-    
-
-## path to csv dataset
-path = "train_dataset"
-## fetch tokenizer
-path_token = "tokenizer"
-
 
 ## Fetch the data
 class FetchData:
@@ -64,7 +64,7 @@ class FetchData:
     
 
 ## fetch data and tokenizer
-data_fetcher = FetchData(path_token, path)
+data_fetcher = FetchData(path_token, path_dataset)
 train_dataset, tokenizer = data_fetcher.fetch()
 
 ## preprocessed dataset
@@ -72,10 +72,16 @@ preprocessed_train = TokenData(train_dataset, tokenizer=tokenizer)
 print(preprocessed_train[1])
 
 ## train dataloader
-train_dataloader = DataLoader(preprocessed_train, batch_size=32)
+train_dataloader = DataLoader(
+    preprocessed_train, 
+    batch_size=32,
+    pin_memory=True,
+    shuffle=False,
+    sampler=DistributedSampler(preprocessed_train)
+    )
 
 ## model
-model = T5ForConditionalGeneration.from_pretrained("t5-base").to(device)
+model = T5ForConditionalGeneration.from_pretrained("t5-base")
 model.resize_token_embeddings(len(tokenizer)) # resize model embeddings
 
 ## loss function
@@ -97,26 +103,21 @@ def train_epoch(model, optimizer):
         attention_mask = batch["attention_mask"].to(device)
         decoder_attention_mask = batch["decoder_attention_mask"].to(device)
 
-        tgt_in = tgt[:, :-1]
-        decoder_mask_in = decoder_attention_mask[:, :-1]
-
         # passing data to model
         outputs = model(
             input_ids=src, 
-            decoder_input_ids=tgt_in,
+            decoder_input_ids=tgt,
             attention_mask=attention_mask, 
-            decoder_attention_mask=decoder_mask_in)
+            decoder_attention_mask=decoder_attention_mask)
         
         # gradients to zero
         optimizer.zero_grad()
-
-        tgt_out = tgt[:, 1:]
         
         # logits
         logits = outputs.logits
 
         # loss
-        loss = loss_fn(logits.view(-1, 530482), tgt_out.contiguous().view(-1))
+        loss = loss_fn(logits.view(-1, 530482), tgt.contiguous().view(-1))
 
         # calculating gradient for the loss function
         loss.backward()
