@@ -153,7 +153,7 @@ def main(rank: int,world_size: int, total_epochs: int, save_every: int):
         train_data = prepare_dataloader(dataset, batch_size=32)
         trainer = Trainer(model, train_data, optimizer, rank, save_every)
         trainer.train(total_epochs)
-        destroy_process_group
+        destroy_process_group()
 
 if __name__ == "__main__":
     import sys
