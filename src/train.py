@@ -11,10 +11,6 @@ from timeit import default_timer as timer
 from collections import OrderedDict
 import pandas as pd
 from transformers import T5Tokenizer, T5ForConditionalGeneration
-import torch.multiprocessing as mp
-from torch.utils.data.distributed import DistributedSampler
-from torch.distributed import init_process_group, destroy_process_group
-from torch.nn.parallel import DistributedDataParallel as DDP
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -72,13 +68,7 @@ preprocessed_train = TokenData(train_dataset, tokenizer=tokenizer)
 print(preprocessed_train[1])
 
 ## train dataloader
-train_dataloader = DataLoader(
-    preprocessed_train, 
-    batch_size=32,
-    pin_memory=True,
-    shuffle=False,
-    sampler=DistributedSampler(preprocessed_train)
-    )
+train_dataloader = DataLoader(preprocessed_train, batch_size=32)
 
 ## model
 model = T5ForConditionalGeneration.from_pretrained("t5-base")
