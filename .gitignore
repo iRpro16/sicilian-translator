@@ -6,3 +6,6 @@ notebooks
 
 # Distribution
 sicilian_translator.egg-info
+
+# Datasets
+datasets

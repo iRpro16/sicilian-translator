@@ -28,7 +28,6 @@ path_dataset = "train_dataset"
 ## fetch tokenizer
 path_token = "tokenizer"
 
-
 ## TokenDataset
 class TokenData(Dataset):
     def __init__(self, dataframe, tokenizer):
@@ -72,6 +71,10 @@ class FetchData:
 data_fetcher = FetchData(path_token, path_dataset)
 train_dataset, tokenizer = data_fetcher.fetch()
 
+## vocab size
+vocab_size = tokenizer.vocab_size
+
+## Trainer class
 class Trainer:
     def __init__(
             self, 
@@ -88,16 +91,16 @@ class Trainer:
         self.save_every = save_every
         self.model = DDP(self.model, device_ids=[self.gpu_id])
 
-    def _run_batch(self, source, targets, attention_mask, decoder_attenion_mask):
+    def _run_batch(self, source, targets, attention_mask, decoder_attention_mask):
         self.optimizer.zero_grad()
         outputs = self.model(input_ids = source,
                              decoder_input_ids = targets,
                              attention_mask = attention_mask,
-                             decoder_attenion_mask= decoder_attenion_mask
+                             decoder_attention_mask= decoder_attention_mask
                              )
         loss_fn = torch.nn.CrossEntropyLoss(ignore_index=tokenizer.pad_token_id)
         logits = outputs.logits
-        loss = loss_fn(logits.view(-1, 530482), targets.contiguous().view(-1))
+        loss = loss_fn(logits.view(-1, vocab_size), targets.contiguous().view(-1))
         loss.backward()
         self.optimizer.step()
         return loss.item()

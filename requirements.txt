@@ -14,4 +14,11 @@ requests
 regex
 sentencepiece
 sacremoses
+transformers[torch]
+accelerate[torch]
+tensorboard
+sacrebleu
+evaluate
+ipywidgets
+openpyxl
 #-e .
