@@ -9,3 +9,6 @@ sicilian_translator.egg-info
 
 # Datasets
 datasets
+
+# tokenizer
+tokenizer-small

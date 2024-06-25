@@ -78,7 +78,7 @@ class Finetune():
             per_device_train_batch_size=self.batch_size,
             per_device_eval_batch_size=64,
             fp16=True,
-            #push_to_hub=True
+            push_to_hub=True
         )
     
     # Finetune the model
