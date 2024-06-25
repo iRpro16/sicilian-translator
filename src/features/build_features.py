@@ -2,8 +2,6 @@ import os
 import re
 import pandas as pd
 
-path = "/home/irpro16/projects/sicilian-translator/datasets/multi-dataset"
-
 class Preprocess():
     def __init__(self, tokenizer_dataset):
         self.tokenizer_dataset = pd.read_csv(tokenizer_dataset)

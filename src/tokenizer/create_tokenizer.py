@@ -1,8 +1,6 @@
 from datasets import load_dataset
 from transformers import AutoTokenizer
 
-old_tokenizer = AutoTokenizer.from_pretrained("t5-small")
-
 class CreateTokenizer():
     def __init__(self, file_type: str, data_file: dict, old_tokenizer):
         self.file_type = file_type
@@ -26,7 +24,7 @@ class CreateTokenizer():
             yield samples['0']
 
     # Train the tokenizer 
-    def train_tokenizer(self, vocab_size):
+    def train_tokenizer(self, old_tokenizer: object, vocab_size: int):
         traning_corpus = self.get_training_corpus()
         trained_tokenizer = old_tokenizer.train_new_from_iterator(traning_corpus, vocab_size)
         return trained_tokenizer

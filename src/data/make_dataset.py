@@ -2,10 +2,6 @@ from sklearn.model_selection import train_test_split
 import pandas as pd
 import os
 
-# Paths
-path_english = "/mnt/c/Users/Isidoro/Documents/datasets/en-si/english_texts.txt"
-path_sicilian = "/mnt/c/Users/Isidoro/Documents/datasets/en-si/sicilian_texts.txt"
-
 class Dataset:
     def __init__(self, txt_sicilian, txt_english):
         self.txt_sicilian = txt_sicilian

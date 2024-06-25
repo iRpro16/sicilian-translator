@@ -3,17 +3,6 @@ from transformers import T5ForConditionalGeneration, AutoTokenizer, DataCollator
 import evaluate
 import numpy as np
 
-
-
-train_ds = "/home/irpro16/projects/sicilian-translator/datasets/train_dataset"
-test_ds = "/home/irpro16/projects/sicilian-translator/datasets/test_dataset"
-tokenizer_path = "/home/irpro16/projects/sicilian-translator/notebooks/tokenizer-small"
-
-model = T5ForConditionalGeneration.from_pretrained("t5-small")
-tokenizer = AutoTokenizer.from_pretrained(tokenizer_path, return_tensors="pt")
-data_files = {"train": train_ds, "test": test_ds}
-
-
 class Trainer():
     def __init__(
             self,
@@ -62,7 +51,7 @@ class Trainer():
             preds=preds[0]
         decoded_preds = self.new_tokenizer.batch_decode(preds, skip_special_tokens=True)
         # Replace -100s in the labels as we can't decode them
-        labels = np.where(labels != -100, labels, tokenizer.pad_token_id)
+        labels = np.where(labels != -100, labels, self.new_tokenizer.pad_token_id)
         decoded_labels = self.new_tokenizer.batch_decode(labels, skip_special_tokens=True)
         # Post-processing
         decoded_preds = [pred.strip() for pred in decoded_preds]
@@ -93,9 +82,10 @@ class Finetune():
         )
     
     # Finetune the model
-    def finetune_model(self):
+    def finetune_model(self, tokenizer: object, data_files: dict, dataset_type: str, 
+                       max_length: int, model):
         ## get trainer to get and preprocess data
-        trainer = Trainer(tokenizer, data_files, "csv", 52, model)
+        trainer = Trainer(tokenizer, data_files, dataset_type, max_length, model)
         tokenized_datasets = trainer.preprocess_dataset()
         ## data collator for Seq2SeqTrainer
         data_collator = DataCollatorForSeq2Seq(tokenizer, model=model)
