@@ -21,3 +21,5 @@ To run this project, run the main file
 $ python src/main.py
 
 ```
+
+[![PyTorch](https://img.shields.io/badge/pytorch-%5Bpackage%5D-orange)](https://pytorch.org/)
