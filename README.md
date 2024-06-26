@@ -29,7 +29,6 @@ To run this project, run the main file. This will begin to finetune the model.
 
 ```
 $ python src/main.py
-
 ```
 
 ## Website
