@@ -21,4 +21,5 @@ sacrebleu
 evaluate
 ipywidgets
 openpyxl
+streamlit
 #-e .
