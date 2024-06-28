@@ -22,6 +22,7 @@ Project is created with:
 
 **To install Pytorch using GPU acceleration:** [Refer to the documentation here](https://pytorch.org/get-started/locally/)
 
+### requirements.txt
 To install the necessary libraries for this project.
 
 ```
