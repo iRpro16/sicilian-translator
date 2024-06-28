@@ -20,6 +20,10 @@ Project is created with:
 * torch 2.3.0
 * cuda 12.1
 
+**To install Pytorch using GPU acceleration:**
+
+[Refer to the documentation here](https://pytorch.org/get-started/locally/)
+
 ```
 $ pip install -r requirements.txt
 ```
