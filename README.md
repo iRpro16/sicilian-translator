@@ -4,13 +4,13 @@
 * [Introduction](#Intro)
 * [Installation](#Installation)
 * [Start](#Start)
-* [Website](#Website)
+* [Demo](#Demo)
 * [HuggingFace](#HuggingFace)
 
 ## Intro
 The scope of this project was to see if I was able to translate English to Sicilian dialect using Transformer models. It was particularly difficult as the accessability to these datasets are quite hard to find. Luckily, the OPUS - Corpora provided datasets that were decent enough to create this project. This project required lots of computational power and was finetuned off of the pretrained T5 model provided from HuggingFace. 
 
-The main difficulty was that Transformer models are not trained off of the Sicilian dialect, so finetuning the T5 model did not yield the desired results. I believe that by first training a model and then finetuning may allow for better results. Creating the tokenizer also proved to be a bit more difficult, as the dialect has many grammatical rules. For this large a dataset, my 4070 RTX GPu did not suffice. So, I utilized the A100 GPU provided by Lambda Labs. 
+The main difficulty was that Transformer models are not trained off of the Sicilian dialect, so finetuning the T5 model did not yield the desired results. I believe that by first training a model and then finetuning may allow for better results. Creating the tokenizer also proved to be a bit more difficult, as the dialect has many grammatical rules. For this large a dataset, my 4070 RTX GPU did not suffice. So, I utilized the A100 GPU provided by Lambda Labs. 
 
 The Bleu score for this was: 4.2489, which is very underwhelming. Finding the clean datasets with minimal grammatical errors was probably why the model did not score as well. OPUS got their corpora from Wikipedia, which is not the most reliable for information. This will be an ongoing project, where I will soon try to see if I can finetune a model already trained on Siclian texts. 
 
@@ -31,7 +31,7 @@ To run this project, run the main file. This will begin to finetune the model.
 $ python src/main.py
 ```
 
-## Website
+## Demo
 To see how the translator works:
 
 https://sicilian-translator-qvmdhfpokewgzzihbhf9ds.streamlit.app/
