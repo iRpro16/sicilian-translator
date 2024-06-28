@@ -24,6 +24,7 @@ Project is created with:
 
 [Refer to the documentation here](https://pytorch.org/get-started/locally/)
 
+
 ```
 $ pip install -r requirements.txt
 ```
